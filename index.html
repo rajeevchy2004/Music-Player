@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #ffeb00, #00d4ff, #8000ff);            background-attachment: fixed;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .music-player {
+            background: linear-gradient(45deg, #008080, #ff00b3, #800080, #ffff00, #00ff00);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .song-info {
+            margin-bottom: 20px;
+        }
+        .singer-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 2px solid #007bff;
+        }
+        .song-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .singer-name {
+            font-size: 14px;
+            color: #555;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .control-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .control-btn:hover {
+            background-color: #0056b3;
+        }
+        audio {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-player">
+        <h1>My Music Player</h1>
+        <div class="song-info">
+            <img id="singer-image" src="images/default.jpg" alt="Singer Image" class="singer-image">
+            <div id="song-name" class="song-name">Song 1</div>
+            <div id="singer-name" class="singer-name">Singer 1</div>
+        </div>
+        <div class="controls">
+            <button id="prev-btn" class="control-btn">⏮</button>
+            <button id="play-pause-btn" class="control-btn">▶️</button>
+            <button id="next-btn" class="control-btn">⏭</button>
+        </div>
+        <audio id="audio" controls>
+            <source id="audio-source" src="songs/song1.mp3" type="audio/mpeg">
+            <source src="songs/song1.mp3" type="audio/mp4">
+            आपका ब्राउज़र इस ऑडियो एलिमेंट को सपोर्ट नहीं करता।
+        </audio>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const songs = [
+                { name: "Apna Bana Le", singer: "Arijit Singh", src: "Apna bna le.mp3", image: "arijit singh.jpg" },
+                { name: "Millionaire", singer: "Honey Singh", src: "millionaire.mp3", image: "honey singh.jpg" },
+                { name: "Born to Shine", singer: "Diljit Dosanjh", src: "Born to shine.mp3", image: "diljit dosanjh.jpeg" },
+                { name: "Lahore", singer: "Guru Randhawa", src: "Lahor.mp3", image: "guru randhawa.jpg" },
+                { name: "Humnava", singer: "Jubin Nautiyal", src: "Humnava.mp3", image: "jubin nautiyal.jpeg" }
+            ];
+
+            const audio = document.getElementById("audio");
+            const audioSource = document.getElementById("audio-source");
+            const songName = document.getElementById("song-name");
+            const singerName = document.getElementById("singer-name");
+            const singerImage = document.getElementById("singer-image");
+            const playPauseBtn = document.getElementById("play-pause-btn");
+            const prevBtn = document.getElementById("prev-btn");
+            const nextBtn = document.getElementById("next-btn");
+
+            let currentSongIndex = 0;
+
+            function loadSong(index) {
+                const song = songs[index];
+
+                audio.pause(); // Stop current song before changing
+                audioSource.src = song.src;
+                audio.load(); // Ensure new song is loaded
+
+                songName.textContent = song.name;
+                singerName.textContent = song.singer;
+
+                // Check if image exists, otherwise load default
+                let img = new Image();
+                img.src = song.image;
+                img.onload = function () {
+                    singerImage.src = song.image;
+                };
+                img.onerror = function () {
+                    singerImage.src = "images/default.jpg"; // Load default image if not found
+                };
+            }
+
+            function playPauseSong() {
+                if (audio.paused) {
+                    audio.play();
+                    playPauseBtn.textContent = "⏸"; // Change to pause icon
+                } else {
+                    audio.pause();
+                    playPauseBtn.textContent = "▶️"; // Change back to play icon
+                }
+            }
+
+            function prevSong() {
+                currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+                loadSong(currentSongIndex);
+                audio.play();
+                playPauseBtn.textContent = "⏸";
+            }
+
+            function nextSong() {
+                currentSongIndex = (currentSongIndex + 1) % songs.length;
+                loadSong(currentSongIndex);
+                audio.play();
+                playPauseBtn.textContent = "⏸";
+            }
+
+            playPauseBtn.addEventListener("click", playPauseSong);
+            prevBtn.addEventListener("click", prevSong);
+            nextBtn.addEventListener("click", nextSong);
+
+            // Load first song when page loads
+            loadSong(currentSongIndex);
+        });
+    </script>
+</body>
+</html>
